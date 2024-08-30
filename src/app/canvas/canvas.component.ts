@@ -132,9 +132,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     //Habilitar que las luces proyecten sombras
     spotlight.castShadow = true;
 
-    // Aumentar la resolución del mapa de sombras
-    spotlight.shadow.mapSize.width = 2048; // Aumentar la resolución del mapa de sombras
-    spotlight.shadow.mapSize.height = 2048; // Aumentar la resolución del mapa de sombras
+    // Dismnuir la resolución del mapa de sombras en dispositivos móviles
+    if (window.innerWidth < 768) {
+      // Si el ancho de la ventana es menor a 768px (dispositivo móvil), ajustar las sombras
+      spotlight.shadow.mapSize.width = 1024; 
+      spotlight.shadow.mapSize.height = 1024; 
+    } else {
+      spotlight.shadow.mapSize.width = 2048; 
+      spotlight.shadow.mapSize.height = 2048; 
+    }
+    
     // Ajustar los límites del mapa de sombras
     spotlight.shadow.camera.near = 1;
     spotlight.shadow.camera.far = 100;
