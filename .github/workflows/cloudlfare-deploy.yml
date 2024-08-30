@@ -35,6 +35,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: flowbite-angular # e.g. 'my-project'
-          directory: dist/flowbite-angular/browser # e.g. 'dist'
+          projectName: 3d-model # e.g. 'my-project'
+          directory: dist/3d-model/browser # e.g. 'dist'
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
