@@ -11,6 +11,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
   imports: [RouterOutlet],
   styleUrls: ['./canvas.component.css'],
   template: `
+    <!-- "SPACESHIP - CB1" (https://skfb.ly/oI8UU) by Kerem Kavalci is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).-->
     <div id="heading">
       <h1>SPACESHIP - CB1</h1>
       <h3>Modelo creado por Kerem Kavalci</h3>
@@ -22,7 +23,6 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
       </div>
     </div>
     
-
   `,
 })
 export class CanvasComponent implements OnInit, AfterViewInit {
@@ -85,7 +85,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       // Si el ancho de la ventana es menor a 768px (dispositivo móvil), ajustar la posición de la cámara
       this.camera.position.set(9, 4, 3);; // Ajustar la posición de la cámara para dispositivos móviles
     } else {
-      this.camera.position.set(5, 4, 3);; // Posición de la cámara para dispositivos no móviles
+      this.camera.position.set(6, 4, 3);; // Posición de la cámara para dispositivos no móviles
     }
     //Posicion de la camara segun vector (x,y,z)
     //this.camera.lookAt(0, 0, 0);
@@ -100,7 +100,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.controls.maxPolarAngle = 1.5;
     this.controls.autoRotate = true;
     this.controls.autoRotateSpeed = 0.5;
-    this.controls.target = new THREE.Vector3(0, 1, 0);
+    this.controls.target = new THREE.Vector3(0, 0, 0);
     this.controls.update();
 
 

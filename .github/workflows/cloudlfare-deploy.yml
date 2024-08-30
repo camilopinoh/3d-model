@@ -1,3 +1,6 @@
+#El API token se saca de "Under Permissions, select Account, Cloudflare Pages and Edit"
+#Se debe de crear el proyecto vacio en Cloudflare Pages antes de ejecutar el workflow 
+
 name: Despliegue Clouflare Pages
 on: 
   workflow_dispatch:
