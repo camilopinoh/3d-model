@@ -1,0 +1,40 @@
+name: Despliegue Clouflare Pages
+on: 
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      deployments: write
+    name: Deploy to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preparacion de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.13.0 # Ver que la version de node sea compatible con el proyecto angular
+
+      - name: NPM Clean Install
+        env:
+            NODE_OPTIONS: "--max_old_space_size=6144"
+        run: |
+            npm set progress=false
+            npm ci
+            
+      - name: Instalar Angular CLI
+        run: npm install -g @angular/cli@18.1.4 # Instalar Angular CLI en el ambiente de workflow
+
+      - name: Build Production Angular app
+        run: ng build
+
+      - name: Publish
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: flowbite-angular # e.g. 'my-project'
+          directory: dist/flowbite-angular/browser # e.g. 'dist'
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
