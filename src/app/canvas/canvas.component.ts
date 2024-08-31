@@ -37,6 +37,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   private stats = new Stats();
   private mixer!: THREE.AnimationMixer; 
   private clock = new THREE.Clock();
+  private isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   ngOnInit(): void {
     this.initThree();
@@ -53,22 +54,25 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   private initThree(): void {
     // Renderer
     //Inicializar el renderer, antialias es para que no se vean los bordes de los objetos
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
     //Poner la salida del color del renderer en el espacio de color sRGB
     //sRGB es tipicamente el default para la mayoria de las pantallas
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     //Establecer el tamaño del renderer
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  
     //Limpiar el renderer a un color negro, el colo por default cuando no hay modelo
     this.renderer.setClearColor(0x000000);
     //Define el pixel ratio para que se pueda renderizar bien en diferentes dispositivos
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    const pixelRatio = Math.min(window.devicePixelRatio, 2);
+    this.renderer.setPixelRatio(pixelRatio);
 
     //Sombras
     //Habilitar sombras
     this.renderer.shadowMap.enabled = true;
     //Tipo de sombras
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
     
     // Escena
     //Se crea una escena nueva
@@ -83,9 +87,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
     
     //Posicion de camara dependeiendo si es movil o no
-    if (window.innerWidth < 768) {
+    if (this.isMobile) {
       // Si el ancho de la ventana es menor a 768px (dispositivo móvil), ajustar la posición de la cámara
-      this.camera.position.set(9, 4, 3);; // Ajustar la posición de la cámara para dispositivos móviles
+      this.camera.position.set(14, 4, 3); // Ajustar la posición de la cámara para dispositivos móviles
     } else {
       this.camera.position.set(6, 4, 3);; // Posición de la cámara para dispositivos no móviles
     }
@@ -109,7 +113,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     // Terreno
     //Agregar geometria basica
     //width, height, widthSegments, heigthSegments
-    const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+    const groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
     //Rotar el avion de manera vertical en 90 grados
     groundGeometry.rotateX(-Math.PI / 2);
     //Aplicar un material de color gris y doubleSide para que se vea por ambos lados el modelo renderizado, para no tener problemas con las sombras
@@ -128,33 +132,31 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
     // Luz
     //Color blanco, intensidad 3, distancia que el spotLight ilumina, (distancia y angulo) atenuacion de luz en los bordes
-    const spotlight = new THREE.SpotLight(0xffffff, 3000, 100, Math.PI / 12, 0.5);
+    const spotlight = new THREE.SpotLight(0xffffff, 1500, 40, Math.PI / 12, 0.5);
     //Posicion de la luz
     spotlight.position.set(0, 15, 0);
     //Habilitar que las luces proyecten sombras
     spotlight.castShadow = true;
 
-    // Dismnuir la resolución del mapa de sombras en dispositivos móviles
-    if (window.innerWidth < 768) {
-      // Si el ancho de la ventana es menor a 768px (dispositivo móvil), ajustar las sombras
-      spotlight.shadow.mapSize.width = 1024; 
-      spotlight.shadow.mapSize.height = 1024; 
-    } else {
-      spotlight.shadow.mapSize.width = 2048; 
-      spotlight.shadow.mapSize.height = 2048; 
-    }
+    // Para dispositivo móvil, ajustar las sombras
+    spotlight.shadow.mapSize.width = this.isMobile ? 512 : 2048; 
+    spotlight.shadow.mapSize.height = this.isMobile ? 512 : 2048; 
     
     // Ajustar los límites del mapa de sombras
     spotlight.shadow.camera.near = 1;
-    spotlight.shadow.camera.far = 100;
+    spotlight.shadow.camera.far = 2;
 
     // Ajustar la suavidad de las sombras
-    spotlight.shadow.radius = 4;
+    //spotlight.shadow.radius = 10;
 
     //Eliminar artefactos de sombras por el detalle del modelo
     spotlight.shadow.bias = -0.0001;
     //Agregar la luz a la escena
     this.scene.add(spotlight);
+
+    // Ambient light to see the scene better
+    // const ambientLight = new THREE.AmbientLight(0x404040, 50);
+    // this.scene.add(ambientLight);
 
     // Modelo
     const loader = new GLTFLoader();
@@ -162,7 +164,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     let model = 'spaceship/scene.gltf';
 
     // Modelo mobile
-    if(window.innerWidth < 768){
+    if(this.isMobile){
       loader.setMeshoptDecoder(MeshoptDecoder);
 
       // Configuracion de KTX2Loader para cargar glb
@@ -219,10 +221,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         progressContainer.style.display = 'none';
       }
     });
-
-    // Ambient light to see the scene better
-    //const ambientLight = new THREE.AmbientLight(0x404040);
-    //this.scene.add(ambientLight);
+    
   }
 
   //Renderizar la escena con la funcion animate
