@@ -72,8 +72,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.renderer.shadowMap.enabled = true;
     //Tipo de sombras
 
-    this.renderer.shadowMap.type = this.isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
-    
+    this.renderer.shadowMap.type = this.isMobile ? THREE.VSMShadowMap  : THREE.PCFSoftShadowMap;
+
     // Escena
     //Se crea una escena nueva
     this.scene = new THREE.Scene();
@@ -221,6 +221,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         progressContainer.style.display = 'none';
       }
     });
+    
     
   }
 
