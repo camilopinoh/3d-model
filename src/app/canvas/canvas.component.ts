@@ -72,7 +72,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.renderer.shadowMap.enabled = true;
     //Tipo de sombras
 
-    this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = this.isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
     
     // Escena
     //Se crea una escena nueva
@@ -147,7 +147,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     spotlight.shadow.camera.far = 2;
 
     // Ajustar la suavidad de las sombras
-    //spotlight.shadow.radius = 10;
+    spotlight.shadow.radius = 2;
 
     //Eliminar artefactos de sombras por el detalle del modelo
     spotlight.shadow.bias = -0.0001;
