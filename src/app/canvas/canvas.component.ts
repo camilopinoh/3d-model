@@ -100,7 +100,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.enablePan = false;
-    this.controls.minDistance = 3;
+    this.controls.minDistance = this.isMobile ? 10 : 3;
     this.controls.maxDistance = 20;
     this.controls.minPolarAngle = 0.5;
     this.controls.maxPolarAngle = 1.5;
