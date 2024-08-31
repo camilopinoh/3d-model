@@ -2,6 +2,8 @@ import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angula
 import { RouterOutlet } from '@angular/router';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder  } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
@@ -156,12 +158,26 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
     // Modelo
     const loader = new GLTFLoader();
+    // Modelo desktop
+    let model = 'spaceship/scene.gltf';
+
+    // Modelo mobile
+    if(window.innerWidth < 768){
+      loader.setMeshoptDecoder(MeshoptDecoder);
+
+      // Configuracion de KTX2Loader para cargar glb
+      const ktx2Loader = new KTX2Loader();
+      ktx2Loader.setTranscoderPath('/assets/basis/');
+      ktx2Loader.detectSupport(this.renderer);
+      loader.setKTX2Loader(ktx2Loader);
+      model = 'spaceship/scene_mobile.glb';
+    }
+    
     //La ruta del gltf esta en public por la configuracion predeterminada de assets en angular.json
-    loader.load('spaceship/scene.gltf', (gltf) => {
+    loader.load( model , (gltf) => {
       const mesh = gltf.scene;
       // Inicializa el mixer aquí, justo después de cargar el modelo
       
-
       mesh.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           (child as THREE.Mesh).castShadow = true;
