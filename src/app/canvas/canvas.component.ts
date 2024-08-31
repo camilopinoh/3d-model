@@ -132,7 +132,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
     // Luz
     //Color blanco, intensidad 3, distancia que el spotLight ilumina, (distancia y angulo) atenuacion de luz en los bordes
-    const spotlight = new THREE.SpotLight(0xffffff, 1500, 40, Math.PI / 12, 0.5);
+    const spotlight = new THREE.SpotLight(0xffffff, 1850, 40, Math.PI / 12, 0.5);
     //Posicion de la luz
     spotlight.position.set(0, 15, 0);
     //Habilitar que las luces proyecten sombras
